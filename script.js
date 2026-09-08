@@ -19,6 +19,11 @@ const shopClock = new Intl.DateTimeFormat('sv-SE', {
   timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit',
   hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
 });
+const shopToday = shopClock.format(new Date()).slice(0, 10);
+const shopTomorrow = new Date(`${shopToday}T12:00:00Z`);
+shopTomorrow.setUTCDate(shopTomorrow.getUTCDate() + 1);
+visitTime.value = `${shopTomorrow.toISOString().slice(0, 10)}T09:30`;
+
 function validateVisitTime() {
   const now = shopClock.format(new Date()).replace(' ', 'T');
   visitTime.min = now;
