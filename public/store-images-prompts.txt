@@ -1,0 +1,5 @@
+使用内置 image_gen 生成三张店内环境轮播图。
+公共提示词：Photorealistic architectural editorial photography of an upscale contemporary pet grooming shop in China. Landscape 16:9, cream-white walls, pale oak cabinetry, deep forest-green accents, brushed stainless steel equipment, clear glass partitions, warm-gray tiles. Soft daylight, realistic room geometry, environment dominant. No text, logos, watermark, collage, people, cafe or human salon.
+接待区：Reception lounge with cream counter, oak pet retail shelves, deep-green seating, pet blankets, leashes and toys; glass wall showing adjacent professional grooming tables.
+洗护区：Dedicated pet bathing room with two raised stainless-steel dog tubs, handheld sprayers, safe access steps, non-slip floor and drainage, neatly folded towels and pet shampoo dispensers.
+美容区：Professional pet grooming room with two adjustable tables, non-slip tops, safety grooming arms, pet dryers with hoses, organized scissors, combs and clippers on rolling carts, oak storage and glass partitions.

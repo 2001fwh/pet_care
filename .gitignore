@@ -1,5 +1,5 @@
 # dependencies
-/node_modules
+node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -36,3 +36,26 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# OS, editor and temporary files
+Thumbs.db
+Desktop.ini
+.idea/
+*.swp
+*.swo
+*~
+*.tmp
+
+# Build and tool caches
+*.tsbuildinfo
+.cache/
+.turbo/
+.eslintcache
+
+# Logs and private keys
+*.log
+*.key
+
+# Keep environment templates versioned
+!.env.example
+!.env.sample
