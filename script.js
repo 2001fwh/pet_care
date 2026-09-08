@@ -54,7 +54,7 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('visible'));
 }, { threshold: 0.12 });
 
-document.querySelectorAll('.service-card, .review-grid article, .promise-list > div').forEach((item) => observer.observe(item));
+document.querySelectorAll('.service-card, .promise-list > div').forEach((item) => observer.observe(item));
 
 const carousel = document.querySelector('.space-carousel');
 const slides = [...carousel.querySelectorAll('.space-slide')];
@@ -87,3 +87,58 @@ updatePause();
 window.setInterval(() => {
   if (!paused && !document.hidden && !carousel.matches(':hover') && !carousel.contains(document.activeElement)) showSlide(activeSlide + 1);
 }, 6000);
+
+const reviewCarousel = document.querySelector('.review-carousel');
+const reviewTrack = reviewCarousel.querySelector('.review-track');
+const reviewCards = [...reviewTrack.children];
+const reviewDots = reviewCarousel.querySelector('.review-dots');
+const reviewReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+let reviewIndex = 0;
+let reviewsPaused = reviewReducedMotion.matches;
+
+function reviewPageSize() {
+  return window.matchMedia('(max-width: 620px)').matches ? 1 : 2;
+}
+function reviewPageCount() {
+  return Math.ceil(reviewCards.length / reviewPageSize());
+}
+function renderReviewDots() {
+  reviewDots.replaceChildren();
+  Array.from({ length: reviewPageCount() }, (_, index) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.setAttribute('aria-label', `查看第 ${index + 1} 组评价`);
+    dot.setAttribute('aria-pressed', String(index === reviewIndex));
+    dot.addEventListener('click', () => showReviews(index));
+    reviewDots.append(dot);
+  });
+}
+function showReviews(index) {
+  const pageCount = reviewPageCount();
+  reviewIndex = (index + pageCount) % pageCount;
+  const firstCard = reviewCards[reviewIndex * reviewPageSize()];
+  reviewTrack.style.transform = `translateX(-${firstCard.offsetLeft}px)`;
+  [...reviewDots.children].forEach((dot, i) => dot.setAttribute('aria-pressed', String(i === reviewIndex)));
+}
+function updateReviewPause() {
+  const button = reviewCarousel.querySelector('[data-review-pause]');
+  button.textContent = reviewsPaused ? '▶' : 'Ⅱ';
+  button.setAttribute('aria-label', reviewsPaused ? '开始自动播放' : '暂停自动播放');
+}
+reviewCarousel.querySelector('[data-review-prev]').addEventListener('click', () => showReviews(reviewIndex - 1));
+reviewCarousel.querySelector('[data-review-next]').addEventListener('click', () => showReviews(reviewIndex + 1));
+reviewCarousel.querySelector('[data-review-pause]').addEventListener('click', () => { reviewsPaused = !reviewsPaused; updateReviewPause(); });
+reviewCarousel.addEventListener('keydown', (event) => {
+  if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+    event.preventDefault();
+    showReviews(reviewIndex + (event.key === 'ArrowLeft' ? -1 : 1));
+  }
+});
+window.addEventListener('resize', () => { renderReviewDots(); showReviews(Math.min(reviewIndex, reviewPageCount() - 1)); });
+reviewReducedMotion.addEventListener('change', (event) => { reviewsPaused = event.matches; updateReviewPause(); });
+renderReviewDots();
+showReviews(0);
+updateReviewPause();
+window.setInterval(() => {
+  if (!reviewsPaused && !document.hidden && !reviewCarousel.matches(':hover') && !reviewCarousel.contains(document.activeElement)) showReviews(reviewIndex + 1);
+}, 5200);
