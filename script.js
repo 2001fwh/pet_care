@@ -13,14 +13,43 @@ navLinks.addEventListener('click', () => {
   navLinks.classList.remove('open');
 });
 
-document.querySelector('#booking-form').addEventListener('submit', (event) => {
-  event.preventDefault();
-  const toast = document.querySelector('#toast');
-  toast.classList.add('show');
-  event.currentTarget.reset();
-  window.setTimeout(() => toast.classList.remove('show'), 4000);
+const bookingForm = document.querySelector('#booking-form');
+const visitTime = document.querySelector('#visit-time');
+const shopClock = new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit',
+  hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
 });
-
+function validateVisitTime() {
+  const now = shopClock.format(new Date()).replace(' ', 'T');
+  visitTime.min = now;
+  visitTime.setCustomValidity('');
+  if (!visitTime.value) return;
+  const date = new Date(`${visitTime.value}+08:00`);
+  const day = new Date(`${visitTime.value.slice(0, 10)}T12:00:00Z`).getUTCDay();
+  const time = visitTime.value.slice(11, 16);
+  if (!Number.isFinite(date.getTime()) || visitTime.value <= now) {
+    visitTime.setCustomValidity('请选择未来的到店时间。');
+  } else if (day === 1) {
+    visitTime.setCustomValidity('每周一店休，请选择周二至周日到店。');
+  } else if (time < '10:00' || time > '20:00') {
+    visitTime.setCustomValidity('请选择营业时间 10:00–20:00 内到店。');
+  }
+}
+visitTime.addEventListener('input', validateVisitTime);
+visitTime.addEventListener('focus', validateVisitTime);
+validateVisitTime();
+let toastTimer;
+bookingForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  validateVisitTime();
+  if (!event.currentTarget.reportValidity()) return;
+  const toast = document.querySelector('#toast');
+  toast.querySelector('b').textContent = '预约信息预览';
+  toast.querySelector('small').textContent = `期望到店：${visitTime.value.replace('T', ' ')}（北京时间）。当前为演示，尚未发送至门店。`;
+  toast.classList.add('show');
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => toast.classList.remove('show'), 8000);
+});
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('visible'));
 }, { threshold: 0.12 });

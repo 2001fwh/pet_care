@@ -130,6 +130,7 @@
             <label>联系电话 *<input name="phone" required inputmode="tel" placeholder="请输入手机号" autocomplete="tel" pattern="[0-9+ -]{7,20}" /></label>
             <fieldset><legend>家里是哪位小朋友？ *</legend><div class="pet-options"><label><input type="radio" name="pet" value="dog" required /><span>🐶 狗狗</span></label><label><input type="radio" name="pet" value="cat" /><span>🐱 猫咪</span></label></div></fieldset>
             <label>想预约的服务<select name="service"><option>基础洗护</option><option>精致造型</option><option>深层 SPA</option><option>到店咨询</option></select></label>
+            <label class="visit-time">期望到店时间 *<input id="visit-time" name="visitTime" type="datetime-local" required aria-describedby="visit-time-help" /><small id="visit-time-help">周二至周日 10:00–20:00（北京时间），实际到店时间需与门店确认。</small></label>
             <button class="button form-submit" type="submit">提交预约 <span>→</span></button>
             <p class="privacy">提交即表示同意我们仅为本次预约联系您</p>
           </form>
